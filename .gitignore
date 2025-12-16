@@ -32,7 +32,8 @@ Thumbs.db
 *~
 
 # Data files
-backend/data/tasks.json
+backend/data/tasks*.json
+backend/data/users.json
 
 # Testing
 /coverage
