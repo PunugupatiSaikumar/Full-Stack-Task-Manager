@@ -9,37 +9,38 @@
 }
 
 .form-label {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: #333;
+  color: #495057;
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .required-asterisk {
-  color: #e74c3c;
+  color: #ef4444;
 }
 
 .form-input {
   padding: 0.75rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
   font-size: 1rem;
   font-family: inherit;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease-in-out;
   background-color: white;
-  color: #333;
+  color: #212529;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
 }
 
 .form-input::placeholder {
-  color: #999;
+  color: #6c757d;
 }
 
 .form-input-error {
@@ -47,14 +48,15 @@
 }
 
 .form-input-error:focus {
-  border-color: #e74c3c;
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
 }
 
 .form-error {
-  color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: -0.25rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
 }
 
 textarea.form-input {
@@ -72,6 +74,6 @@ select.form-input {
 }
 
 select.form-input:focus {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23667eea' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236366f1' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 

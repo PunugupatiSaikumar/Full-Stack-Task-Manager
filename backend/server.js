@@ -9,10 +9,11 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const taskRoutes = require('./routes/tasks');
+const authRoutes = require('./routes/auth');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Middleware
 app.use(cors()); // Enable CORS for frontend communication
@@ -25,6 +26,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
 // 404 handler for undefined routes

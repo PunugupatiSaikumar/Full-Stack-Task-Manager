@@ -19,14 +19,15 @@
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  color: #666;
+  color: #6c757d;
 }
 
 .spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #667eea;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #6366f1;
+  border-right: 4px solid #8b5cf6;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -44,7 +45,7 @@
   justify-content: center;
   padding: 4rem 2rem;
   text-align: center;
-  color: #666;
+  color: #6c757d;
 }
 
 .empty-icon {
@@ -55,7 +56,8 @@
 .task-list-empty h2 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #212529;
+  font-weight: 600;
 }
 
 .task-list-empty p {

@@ -7,7 +7,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/tasks';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api/tasks';
 
 /**
  * Create axios instance with default configuration
@@ -19,6 +19,17 @@ const apiClient = axios.create({
   },
   timeout: 10000, // 10 second timeout
 });
+
+/**
+ * Set authorization token for requests
+ */
+export const setAuthToken = (token) => {
+  if (token) {
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete apiClient.defaults.headers.common['Authorization'];
+  }
+};
 
 /**
  * Handle API errors and extract meaningful error messages

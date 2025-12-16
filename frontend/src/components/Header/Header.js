@@ -7,7 +7,7 @@
 import React from 'react';
 import './Header.css';
 
-const Header = ({ onAddTask, filter, onFilterChange }) => {
+const Header = ({ onAddTask, filter, onFilterChange, onLogout }) => {
   /**
    * Handle filter change
    */
@@ -26,13 +26,22 @@ const Header = ({ onAddTask, filter, onFilterChange }) => {
           <p>Organize your tasks efficiently</p>
         </div>
         
-        <button 
-          className="btn btn-primary"
-          onClick={onAddTask}
-          aria-label="Add new task"
-        >
-          + Add Task
-        </button>
+        <div className="header-actions">
+          <button 
+            className="btn btn-primary"
+            onClick={onAddTask}
+            aria-label="Add new task"
+          >
+            + Add Task
+          </button>
+          <button 
+            className="btn btn-secondary"
+            onClick={onLogout}
+            aria-label="Logout"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="header-filters">

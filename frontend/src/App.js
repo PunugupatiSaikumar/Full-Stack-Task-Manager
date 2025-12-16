@@ -6,18 +6,34 @@
 
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { setAuthToken } from './services/taskService';
 import Header from './components/Header/Header';
 import TaskList from './components/TaskList/TaskList';
 import TaskFormModal from './components/Modal/TaskFormModal';
+import Login from './components/Login/Login';
 import { taskService } from './services/taskService';
 
-function App() {
+const AppContent = () => {
+  const { isAuthenticated, loading: authLoading, getToken, logout } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [filter, setFilter] = useState({ status: '', priority: '' });
+
+  /**
+   * Set auth token for API calls
+   */
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      setAuthToken(token);
+    } else {
+      setAuthToken(null);
+    }
+  }, [getToken, isAuthenticated]);
 
   /**
    * Fetch all tasks from the API
@@ -40,8 +56,26 @@ function App() {
    * Load tasks on component mount and when filter changes
    */
   useEffect(() => {
-    fetchTasks();
-  }, [filter]);
+    if (isAuthenticated) {
+      fetchTasks();
+    }
+  }, [filter, isAuthenticated]);
+
+  /**
+   * Show login if not authenticated
+   */
+  if (authLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
 
   /**
    * Handle creating a new task
@@ -118,6 +152,7 @@ function App() {
         onAddTask={handleOpenCreateModal}
         filter={filter}
         onFilterChange={setFilter}
+        onLogout={logout}
       />
       
       <main className="main-content">
@@ -147,6 +182,14 @@ function App() {
         />
       )}
     </div>
+  );
+};
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

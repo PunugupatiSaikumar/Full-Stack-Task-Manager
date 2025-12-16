@@ -9,20 +9,22 @@ const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-const DATA_FILE = path.join(__dirname, '../data/tasks.json');
-const DATA_DIR = path.dirname(DATA_FILE);
+// Store tasks per user
+const getDataFile = (userId) => path.join(__dirname, `../data/tasks_${userId}.json`);
+const DATA_DIR = path.join(__dirname, '../data');
 
 /**
- * Ensure data directory and file exist
+ * Ensure data directory and file exist for a user
  */
-const ensureDataFile = async () => {
+const ensureDataFile = async (userId) => {
   try {
+    const dataFile = getDataFile(userId);
     await fs.mkdir(DATA_DIR, { recursive: true });
     try {
-      await fs.access(DATA_FILE);
+      await fs.access(dataFile);
     } catch {
       // File doesn't exist, create it with empty array
-      await fs.writeFile(DATA_FILE, JSON.stringify([], null, 2));
+      await fs.writeFile(dataFile, JSON.stringify([], null, 2));
     }
   } catch (error) {
     throw new Error(`Failed to initialize data file: ${error.message}`);
@@ -30,12 +32,13 @@ const ensureDataFile = async () => {
 };
 
 /**
- * Read tasks from file
+ * Read tasks from file for a user
  */
-const readTasks = async () => {
+const readTasks = async (userId) => {
   try {
-    await ensureDataFile();
-    const data = await fs.readFile(DATA_FILE, 'utf8');
+    const dataFile = getDataFile(userId);
+    await ensureDataFile(userId);
+    const data = await fs.readFile(dataFile, 'utf8');
     return JSON.parse(data);
   } catch (error) {
     throw new Error(`Failed to read tasks: ${error.message}`);
@@ -43,12 +46,13 @@ const readTasks = async () => {
 };
 
 /**
- * Write tasks to file
+ * Write tasks to file for a user
  */
-const writeTasks = async (tasks) => {
+const writeTasks = async (userId, tasks) => {
   try {
-    await ensureDataFile();
-    await fs.writeFile(DATA_FILE, JSON.stringify(tasks, null, 2));
+    const dataFile = getDataFile(userId);
+    await ensureDataFile(userId);
+    await fs.writeFile(dataFile, JSON.stringify(tasks, null, 2));
   } catch (error) {
     throw new Error(`Failed to write tasks: ${error.message}`);
   }
@@ -57,9 +61,9 @@ const writeTasks = async (tasks) => {
 /**
  * Get all tasks with optional filters
  */
-const getAllTasks = async (filters = {}) => {
+const getAllTasks = async (userId, filters = {}) => {
   try {
-    let tasks = await readTasks();
+    let tasks = await readTasks(userId);
     
     // Apply filters
     if (filters.status) {
@@ -81,9 +85,9 @@ const getAllTasks = async (filters = {}) => {
 /**
  * Get a single task by ID
  */
-const getTaskById = async (id) => {
+const getTaskById = async (userId, id) => {
   try {
-    const tasks = await readTasks();
+    const tasks = await readTasks(userId);
     return tasks.find(task => task.id === id);
   } catch (error) {
     throw new Error(`Failed to get task: ${error.message}`);
@@ -93,9 +97,9 @@ const getTaskById = async (id) => {
 /**
  * Create a new task
  */
-const createTask = async (taskData) => {
+const createTask = async (userId, taskData) => {
   try {
-    const tasks = await readTasks();
+    const tasks = await readTasks(userId);
     
     const newTask = {
       id: uuidv4(),
@@ -109,7 +113,7 @@ const createTask = async (taskData) => {
     };
     
     tasks.push(newTask);
-    await writeTasks(tasks);
+    await writeTasks(userId, tasks);
     
     return newTask;
   } catch (error) {
@@ -120,9 +124,9 @@ const createTask = async (taskData) => {
 /**
  * Update an existing task
  */
-const updateTask = async (id, updateData) => {
+const updateTask = async (userId, id, updateData) => {
   try {
-    const tasks = await readTasks();
+    const tasks = await readTasks(userId);
     const taskIndex = tasks.findIndex(task => task.id === id);
     
     if (taskIndex === -1) {
@@ -138,7 +142,7 @@ const updateTask = async (id, updateData) => {
       updatedAt: new Date().toISOString() // Update modification date
     };
     
-    await writeTasks(tasks);
+    await writeTasks(userId, tasks);
     return tasks[taskIndex];
   } catch (error) {
     throw new Error(`Failed to update task: ${error.message}`);
@@ -148,9 +152,9 @@ const updateTask = async (id, updateData) => {
 /**
  * Delete a task
  */
-const deleteTask = async (id) => {
+const deleteTask = async (userId, id) => {
   try {
-    const tasks = await readTasks();
+    const tasks = await readTasks(userId);
     const initialLength = tasks.length;
     const filteredTasks = tasks.filter(task => task.id !== id);
     
@@ -158,7 +162,7 @@ const deleteTask = async (id) => {
       return false; // Task not found
     }
     
-    await writeTasks(filteredTasks);
+    await writeTasks(userId, filteredTasks);
     return true;
   } catch (error) {
     throw new Error(`Failed to delete task: ${error.message}`);
